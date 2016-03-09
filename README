@@ -1,7 +1,12 @@
-gcompile is a runtime compiler for IDL.
+**gcompile** is a runtime compiler for IDL.
 
 See the wiki page for further information:
   https://github.com/gcalderone/gcompile/wiki
-  
+
+**gcompile** is by no mean supposed to be complete, nor well documented or error-free.  It is released under the GNU General Public License, and is provided "as is", in the hope that it will be useful.
+
+Contributions are welcome!  Feel free to drop me an email if you found a bug or would like to participate in developing.
+
 Author: Giorgio Calderone
-E-mail: giorgio.calderone@gmail.com
+E-mail: [giorgio.calderone@gmail.com](mailto:giorgio.calderone@gmail.com)
+

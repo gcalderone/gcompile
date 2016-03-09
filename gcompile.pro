@@ -19,6 +19,7 @@
 ;; *******************************************************************
 
 
+
 ;=====================================================================
 ;NAME:
 ;  gcompile
@@ -28,85 +29,60 @@
 ;  command: it allows to compile a .PRO file within IDL programs.
 ;
 PRO $
-   gcompile $
-   , filepro                   $ ;;IN,String|Path to the ".pro" file to be compiled
-   , CLEAR=clear               $ ;;KW       |Clear list of compiled files
-   , PACKAGE=package           $ ;;KW       |file is a package initialization procedure, to be executed after compilation
-   , SKIP_RESOLVE=skipResolve  $ ;;KW       |Skip call to RESOLVE_ALL at the end
-   , _EXTRA=extra                ;;OPT      |Keywords passed to the package initialization procedure
+   gcompile    $
+   , filepro   $  ;;IN,String|Path to the ".pro" file to be compiled
+   , HOLD=hold    ;;KW       |Postpone compilation until "gcompile" is called without "/hold"
   COMPILE_OPT IDL2
   ON_ERROR, 2
 
-  COMMON COM_GCOMPILE, compiledFiles
-  IF (N_ELEMENTS(compiledFiles) EQ 0) THEN $
-     compiledFiles = []
+  hold = KEYWORD_SET(hold) 
 
-  IF (KEYWORD_SET(clear)) THEN BEGIN
-     compiledFIles = []
-     RETURN
+  IF (N_PARAMS() EQ 1) THEN BEGIN
+     ;;Check input parameter
+     IF (SIZE(filepro, /tname) NE 'STRING') THEN $
+        MESSAGE, 'Input parameter is supposed to be a string'
+
+     IF (N_ELEMENTS(filepro) NE 1) THEN $
+        MESSAGE, 'Input parameter must be a scalar'
+
+     ;;Check that file exists, it is not a directory and it is a .pro file
+     fi = FILE_INFO(filepro)
+     IF (~fi.exists) THEN $
+        MESSAGE, 'File ' + _filepro + ' does not exists'
+     
+     IF (fi.directory) THEN $
+        MESSAGE, filepro + ' is a directory, while a .pro file was expected'
+     
+     IF (STRUPCASE(STRMID(filepro, 3, 4, /reverse)) NE '.PRO') THEN $
+        MESSAGE, filepro + ' is a not a .pro file'
   ENDIF
 
 
-  ;;Check input parameter
-  IF (SIZE(filepro, /tname) NE 'STRING') THEN $
-     MESSAGE, 'Input parameter is supposed to be a string'
+  ;;Compile source code in filepro
+  procName = 'gcompile_tmp'
+  tmpDir   = GETENV('IDL_TMPDIR') 
+  tmpFile  = tmpDir + procName + '.pro'
 
-  IF (N_ELEMENTS(filepro) NE 1) THEN $
-     MESSAGE, 'Input parameter must be a scalar'
+  OPENW, lun, tmpFile, /get_lun, /append
 
-  ;;Check if file has already been compiled
-  i = WHERE(compiledFiles EQ filepro)
-  IF (i[0] NE -1) THEN RETURN
+  IF (N_PARAMS() EQ 1) THEN $
+     PRINTF, lun, '@' + FILE_EXPAND_PATH(filepro)
 
-  ;;Check file exists, is not a directory and is a .pro file
-  fi = FILE_INFO(filepro)
-  IF (~fi.exists) THEN $
-     MESSAGE, 'File ' + filepro + ' does not exists'
+  IF (~hold) THEN BEGIN
+     PRINTF, lun, 'PRO ' + procName
+     PRINTF, lun, 'END'
+  ENDIF
 
-  IF (fi.directory) THEN $
-     MESSAGE, filepro + ' is a directory, while a .pro file was expected'
-
-  IF (STRUPCASE(STRMID(filepro, 3, 4, /reverse)) NE '.PRO') THEN $
-     MESSAGE, filepro + ' is a not a .pro file'
-
-
-  ;;Extract the absolute path and the routine name
-  tmp = STRSPLIT(FILE_EXPAND_PATH(filepro), '/\', /preserve_null, /extract)
-  path = STRJOIN(tmp[0:-2], '/') + '/'
-  procName = tmp[-1]
-  procName = STRMID(procName, 0, STRLEN(procName)-4)
-
-
-  ;:Compile source code in filepro
-  backup_quiet = !QUIET
-  !QUIET = 1
-  tmpFile = 'gcompile_tmp'
-  OPENW, lun, tmpFile + '.pro', /get_lun
-  PRINTF, lun, '@' + filepro
-  PRINTF, lun, 'PRO ' + tmpFile
-  PRINTF, lun, 'END'
   FREE_LUN, lun
-  RESOLVE_ROUTINE, tmpFile, /COMPILE  ;_ILE
-  FILE_DELETE, tmpFile + '.pro', /allow
-  !QUIET = backup_quiet
 
+  IF (~hold) THEN BEGIN
+     backup_quiet = !QUIET
+     !QUIET = 1
+     CD, tmpDir, CURRENT=current
+     RESOLVE_ROUTINE, procName, /compile_full_file     
+     CD, current
+     !QUIET = backup_quiet
 
-  ;;Add filepro to the list of compiled files
-  compiledFiles = [compiledFiles, filepro]
-
-  ;;If we are not compiling a package our job ends here
-  IF (~KEYWORD_SET(package)) THEN RETURN
-
-  ;;Call the package initialization procedure, pass the absolute
-  ;;package path and the _EXTRA keywords
-  MESSAGE, /info, '--> ' + filepro
-  if (KEYWORD_SET(extra)) THEN CALL_PROCEDURE, procName, path, _EXTRA=extra $
-  ELSE                         CALL_PROCEDURE, procName, path
-
-  ;;Now call RESOLVE_ALL to check for undefined procedure/functions.
-  IF (KEYWORD_SET(skipResolve)) THEN RETURN
-  backup_quiet = !QUIET
-  !QUIET = 1
-  RESOLVE_ALL, /CONTINUE_ON_ERROR, UNRESOLVED=unresolved
-  !QUIET = backup_quiet
+     FILE_DELETE, tmpFile, /allow
+  ENDIF
 END
