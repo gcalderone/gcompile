@@ -11,6 +11,12 @@ PRO gcompile_mpfit, path
   COMPILE_OPT IDL2
   ON_ERROR, 2
 
+  ;;If path is not given consider the path of current file
+  IF (N_PARAMS() EQ 0) THEN BEGIN
+     path = ROUTINE_FILEPATH()
+     path = STRMID(path, 0, (STRSPLIT(path, PATH_SEP()))[-1])
+  ENDIF
+
   PRINT, 'GCOMPILE mpfit : ' + path
 
   ;;Forward declaration of functions

@@ -50,6 +50,13 @@ print $out "PRO $idlProc, path\n";
 print $out "  COMPILE_OPT IDL2\n";
 print $out "  ON_ERROR, 2\n";
 print $out "\n";
+
+print $out "  ;;If path is not given consider the path of current file\n";
+print $out "  IF (N_PARAMS() EQ 0) THEN BEGIN\n";
+print $out "     path = ROUTINE_FILEPATH()\n";
+print $out "     path = STRMID(path, 0, (STRSPLIT(path, PATH_SEP()))[-1])\n";
+print $out "  ENDIF\n";
+print $out "\n";
 print $out "  PRINT, 'GCOMPILE $pkgName : ' + path\n\n";
 
 print $out "  ;;Forward declaration of functions\n";
