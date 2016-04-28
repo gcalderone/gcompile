@@ -1,15 +1,28 @@
-@gcompile
-;;
-;;This file has been automatically generated with the command:
-;;  gcompile_makepkg 'coyote' '/home/gcalderone/my/work/software/IDL/Contrib/coyote_astron_20150325'
-;;
-;;To initialize the 'coyote' package you should copy the gcompile_coyote.pro file
-;;in a directory listed in the IDL_PATH environment variable, and then call
-;;  gcompile_coyote, '<path_to_the_package_directory>'
-;;
+;=====================================================================
+;NAME:
+;  gcompile_coyote
+;
+;PURPOSE:
+;  Initialize the 'coyote' package.
+;
+;DEPENDENCIES:
+;  gcompile (https://github.com/gcalderone/gcompile)
+;
+;PARAMETERS:
+;  PATH (input, a scalar string)
+;    Path to the coyote directory.  If this parameter is not given the path
+;    where this routine is stored will be considered.
+;
+;NOTES:
+;  To initialize the 'coyote' package you should copy the gcompile_coyote.pro file
+;  in a directory listed in the IDL_PATH environment variable.
+;
+;  This file has been automatically generated with the command:
+;    gcompile_makepkg 'coyote' '/home/gcalderone/my/work/software/IDL/Contrib/coyote_astron_20150325'
+;
 PRO gcompile_coyote, path
   COMPILE_OPT IDL2
-  ON_ERROR, 2
+  ON_ERROR, 0
 
   ;;If path is not given consider the path of current file
   IF (N_PARAMS() EQ 0) THEN BEGIN

@@ -1,37 +1,42 @@
-;; *******************************************************************
-;; gcompile: a runtime compiler for IDL
-;;
-;; Copyright (C) 2015 Giorgio Calderone
-;;
-;; This program is free software; you can redistribute it and/or
-;; modify it under the terms of the GNU General Public icense
-;; as published by the Free Software Foundation; either version 2
-;; of the License, or (at your option) any later version.
-;;
-;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-;;
-;; You should have received a copy of the GNU General Public License
-;; along with this program. If not, see <http://www.gnu.org/licenses/>.
-;;
-;; *******************************************************************
-
-
+; *******************************************************************
+; gcompile: a runtime compiler for IDL
+;
+; Copyright (C) 2015-2016 Giorgio Calderone
+;
+; This program is free software; you can redistribute it and/or
+; modify it under the terms of the GNU General Public icense
+; as published by the Free Software Foundation; either version 2
+; of the License, or (at your option) any later version.
+;
+; This program is distributed in the hope that it will be useful,
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+; GNU General Public License for more details.
+;
+; You should have received a copy of the GNU General Public License
+; along with this program. If not, see <http://www.gnu.org/licenses/>.
+;
+; *******************************************************************
 
 ;=====================================================================
 ;NAME:
 ;  gcompile
 ;
 ;PURPOSE:
-;  This routine provides a replacement for the .COMPILE executive
-;  command: it allows to compile a .PRO file within IDL programs.
+;  Provides a replacement for the .COMPILE executive command at
+;  runtime, i.e. it allows to compile a .PRO file within IDL programs.
 ;
-PRO $
-   gcompile    $
-   , filepro   $  ;;IN,String|Path to the ".pro" file to be compiled
-   , HOLD=hold    ;;KW       |Postpone compilation until "gcompile" is called without "/hold"
+;PARAMETERS:
+;  FILEPRO (input, a scalar string)
+;    Path to the ".pro" file to be compiled.
+;
+;  /HOLD (keyword)
+;    Postpone compilation until "gcompile" is called without "/hold".
+;
+;WEBSITE:
+;  https://github.com/gcalderone/gcompile
+;
+PRO gcompile, filepro, HOLD=hold
   COMPILE_OPT IDL2
   ON_ERROR, 2
 
@@ -71,18 +76,17 @@ PRO $
   IF (~hold) THEN BEGIN
      PRINTF, lun, 'PRO ' + procName
      PRINTF, lun, 'END'
-  ENDIF
+     FREE_LUN, lun
 
-  FREE_LUN, lun
-
-  IF (~hold) THEN BEGIN
      backup_quiet = !QUIET
      !QUIET = 1
      CD, tmpDir, CURRENT=current
-     RESOLVE_ROUTINE, procName, /compile_full_file     
+     RESOLVE_ROUTINE, procName, /compile_full_file
      CD, current
      !QUIET = backup_quiet
 
      FILE_DELETE, tmpFile, /allow
-  ENDIF
+  ENDIF $
+  ELSE  $
+     FREE_LUN, lun
 END

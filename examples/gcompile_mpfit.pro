@@ -1,15 +1,28 @@
-@gcompile
-;;
-;;This file has been automatically generated with the command:
-;;  gcompile_makepkg 'mpfit' '/home/gcalderone/my/work/software/IDL/Contrib/mpfit_20130814'
-;;
-;;To initialize the 'mpfit' package you should copy the gcompile_mpfit.pro file
-;;in a directory listed in the IDL_PATH environment variable, and then call
-;;  gcompile_mpfit, '<path_to_the_package_directory>'
-;;
+;=====================================================================
+;NAME:
+;  gcompile_mpfit
+;
+;PURPOSE:
+;  Initialize the 'mpfit' package.
+;
+;DEPENDENCIES:
+;  gcompile (https://github.com/gcalderone/gcompile)
+;
+;PARAMETERS:
+;  PATH (input, a scalar string)
+;    Path to the mpfit directory.  If this parameter is not given the path
+;    where this routine is stored will be considered.
+;
+;NOTES:
+;  To initialize the 'mpfit' package you should copy the gcompile_mpfit.pro file
+;  in a directory listed in the IDL_PATH environment variable.
+;
+;  This file has been automatically generated with the command:
+;    gcompile_makepkg 'mpfit' '/home/gcalderone/my/work/software/IDL/Contrib/mpfit_20130814'
+;
 PRO gcompile_mpfit, path
   COMPILE_OPT IDL2
-  ON_ERROR, 2
+  ON_ERROR, 0
 
   ;;If path is not given consider the path of current file
   IF (N_PARAMS() EQ 0) THEN BEGIN

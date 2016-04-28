@@ -3,7 +3,7 @@
 # *******************************************************************
 # gcompile: a runtime compiler for IDL
 #
-# Copyright (C) 2015 Giorgio Calderone
+# Copyright (C) 2015-2016 Giorgio Calderone
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public icense
@@ -36,19 +36,32 @@ print "package path: $pkgPath\n\n";
 
 open ($out, "> $idlProc.pro") || die("Cannot open file $idlProc.pro for writing");
 
-print $out "\@gcompile\n";
-print $out ";;\n";
-print $out ";;This file has been automatically generated with the command:\n";
-print $out ";;  gcompile_makepkg '$pkgName' '$pkgPath'\n";
-print $out ";;\n";
-print $out ";;To initialize the '$pkgName' package you should copy the $idlProc.pro file\n";
-print $out ";;in a directory listed in the IDL_PATH environment variable, and then call\n";
-print $out ";;  $idlProc, '<path_to_the_package_directory>'\n";
-print $out ";;\n";
+print $out ";=====================================================================\n";
+print $out ";NAME:\n";
+print $out ";  $idlProc\n";
+print $out ";\n";
+print $out ";PURPOSE:\n";
+print $out ";  Initialize the '$pkgName' package.\n";
+print $out ";\n";
+print $out ";DEPENDENCIES:\n";
+print $out ";  gcompile (https://github.com/gcalderone/gcompile)\n";
+print $out ";\n";
+print $out ";PARAMETERS:\n";
+print $out ";  PATH (input, a scalar string)\n";
+print $out ";    Path to the $pkgName directory.  If this parameter is not given the path\n";
+print $out ";    where this routine is stored will be considered.\n";
+print $out ";\n";
+print $out ";NOTES:\n";
+print $out ";  To initialize the '$pkgName' package you should copy the $idlProc.pro file\n";
+print $out ";  in a directory listed in the IDL_PATH environment variable.\n";
+print $out ";\n";
+print $out ";  This file has been automatically generated with the command:\n";
+print $out ";    gcompile_makepkg '$pkgName' '$pkgPath'\n";
+print $out ";\n";
 
 print $out "PRO $idlProc, path\n";
 print $out "  COMPILE_OPT IDL2\n";
-print $out "  ON_ERROR, 2\n";
+print $out "  ON_ERROR, 0\n";
 print $out "\n";
 
 print $out "  ;;If path is not given consider the path of current file\n";
