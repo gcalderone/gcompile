@@ -53,7 +53,7 @@ PRO gcompile, filepro, HOLD=hold
      ;;Check that file exists, it is not a directory and it is a .pro file
      fi = FILE_INFO(filepro)
      IF (~fi.exists) THEN $
-        MESSAGE, 'File ' + _filepro + ' does not exists'
+        MESSAGE, 'File ' + filepro + ' does not exists'
      
      IF (fi.directory) THEN $
         MESSAGE, filepro + ' is a directory, while a .pro file was expected'
