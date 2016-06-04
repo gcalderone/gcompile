@@ -9,26 +9,33 @@
 ;  gcompile (https://github.com/gcalderone/gcompile)
 ;
 ;PARAMETERS:
-;  PATH (input, a scalar string)
-;    Path to the mpfit directory.  If this parameter is not given the path
-;    where this routine is stored will be considered.
+;  PATH (optional input, a scalar string)
+;    Path to the mpfit directory.  If this parameter is not given 
+;    the path where this routine is stored will be considered.
 ;
-;NOTES:
-;  To initialize the 'mpfit' package you should copy the gcompile_mpfit.pro file
-;  in a directory listed in the IDL_PATH environment variable.
+;USAGE:
+;  To compile the 'mpfit' package you should either:
 ;
-;  This file has been automatically generated with the command:
-;    gcompile_makepkg 'mpfit' '/home/gcalderone/my/work/software/IDL/Contrib/mpfit_20130814'
+;  - copy the gcompile_mpfit.pro file in a directory listed in the
+;    IDL_PATH environment variable and call:
+;      gcompile_mpfit, 'PATH/TO/mpfit'
+;
+;  - copy the gcompile_mpfit.pro file in a directory NOT listed in the
+;    IDL_PATH environment variable (say PATH/TO/mpfit), add
+;    the following line in one of your source files:
+;      @PATH/TO/mpfit/gcompile_mpfit.pro
+;    and then call:
+;      gcompile_mpfit
+;    without any argument.
+;
 ;
 PRO gcompile_mpfit, path
   COMPILE_OPT IDL2
   ON_ERROR, 0
 
   ;;If path is not given consider the path of current file
-  IF (N_PARAMS() EQ 0) THEN BEGIN
-     path = ROUTINE_FILEPATH()
-     path = STRMID(path, 0, (STRSPLIT(path, PATH_SEP()))[-1])
-  ENDIF
+  IF (N_PARAMS() EQ 0) THEN $
+     path = FILE_DIRNAME(ROUTINE_FILEPATH(), /mark)
 
   PRINT, 'GCOMPILE mpfit : ' + path
 

@@ -59,7 +59,7 @@ print $out ";    IDL_PATH environment variable and call:\n";
 print $out ";      $idlProc, 'PATH/TO/$pkgName'\n";
 print $out ";\n";
 print $out ";  - copy the $idlProc.pro file in a directory NOT listed in the\n";
-print $out ";    IDL_PATH environment variable (say PATH/TO/$pkgName), add:\n";
+print $out ";    IDL_PATH environment variable (say PATH/TO/$pkgName), add\n";
 print $out ";    the following line in one of your source files:\n";
 print $out ";      \@PATH/TO/$pkgName/$idlProc.pro\n";
 print $out ";    and then call:\n";
