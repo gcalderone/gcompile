@@ -59,7 +59,7 @@ print $out ";  To compile the '$pkgName' package you should copy the '$idlProc.p
 print $out ";  file in a directory listed in the IDL_PATH environment variable and call:\n";
 print $out ";      $idlProc, 'PATH/TO/$pkgName'\n";
 print $out ";\n";
-print $out ";  Alternatively you may copy $idlProc.pro in the 'PATH/TO/$pkgName' directory\n";
+print $out ";  Alternatively you may copy ''$idlProc.pro' in the 'PATH/TO/$pkgName' directory\n";
 print $out ";  and call '$idlProc' without any argument.  In this case '$idlProc.pro'\n";
 print $out ";  should be explicitly compiled using either the .COMPILE command or the \"@\" syntax.\n";
 print $out ";\n";
